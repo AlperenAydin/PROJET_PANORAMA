@@ -5,5 +5,4 @@ function p = f_Hx(H, x, y)
     p(2) = p(2)./p(3);
     p(3) = p(3)./p(3);
     p = round(p);
-
 end

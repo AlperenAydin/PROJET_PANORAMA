@@ -1,5 +1,4 @@
-close all
-
+close all;
 
 I1 = rgb2gray(imread('keble_a.jpg'));
 I2 = rgb2gray(imread('keble_b.jpg'));
