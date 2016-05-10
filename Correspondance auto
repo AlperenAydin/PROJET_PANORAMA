@@ -1,0 +1,31 @@
+
+
+Résumé de la partie 3 Mise en Correspondance automatique
+
+Detecteur de Harris :
+Amélioration du detecteur de Moravec :
+Detection des gradients horiz et verti
+Si les 2 grad ont une valeur petite => intensité identique => dans l'objet
+Si un des deux grad a une valeur grande et l'autre petite => intensité diff sur une direction, identique sur l'autre
+=> contour d'un objet
+Si les deux grad ont une valeur grande => intensité diff pour les 2 directions => coin !
+
+Problème du detecteur de Moravec : les points ont aussi une intensité diff sur les 2 directions, comme les coins. Du coup, le detecteur est très sensible au bruit !
+
+Le detecteur de Haris permet de régler ces problèmes.
+On convolue alors par une gaussienne pour diminuer l'influence du bruit.
+
+I_x = gradient de I selon x 
+A = sum( I_x²(x+x',y+y')*W(x',y')) (sum sur x' et y')
+B = sum( I_y²(x+x',y+y')*W(x',y')) (sum sur x' et y')
+C = sum( I_x(x+x',y+y')*I_y(x+x',y+y')*W(x',y')) (sum sur x' et y')
+
+W(x',y') = exp-(x'²+y'²/2sigma²)   (gaussienne)
+
+V = Adx² + 2Cdxdy + Bdy² = [dx, dy]Mt
+
+on regarde les val propres de M, v1 et v2
+si v1 et v2 sont grandes => coins
+det(M) = v1v2 et trace(M) = v1+v2
+
+=> Charris = det(M) -k*tr(M) = AB - C² - k(A-B)
