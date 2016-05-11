@@ -2,12 +2,24 @@
 
 close all; clear all;
 
-im = double(rgb2gray( imread('keble_a.jpg' ) ));
+im = im2double(rgb2gray( imread('keble_a.jpg' ) ));
 
-[gradX, gradY] = gradient(im);
+[Ix, Iy] = gradient(im);
 
 figure(); colormap gray;
 subplot(121);
-imagesc(gradX);
+imagesc(Ix);
 subplot(122);
-imagesc(gradY);
+imagesc(Iy);
+
+sigma = 1;
+
+
+
+W =  fspecial('gaussian', 9, 1);
+A = conv2(Ix.^2, W);
+B = conv2(Iy.^2, W);
+C = conv2(Ix.*Iy, W);
+
+[h,w] = size(A);
+Harris = zeros(h,w); 
