@@ -2,34 +2,18 @@
 
 close all; clear all;
 
-im = im2double(rgb2gray( imread('keble_a.jpg' ) ));
+im = rgb2gray( imread('keble_a.jpg' ) );
 
-[Ix, Iy] = gradient(im);
+[Ix, Iy] = gradient(double(im));
 
-figure(); colormap gray;
-subplot(121);
-imagesc(Ix);
-subplot(122);
-imagesc(Iy);
 
 sigma = 1;
 
-
-
-W =  fspecial('gaussian', 10, 2);
-A = imfilter(Ix.^2, W);
-B = imfilter(Iy.^2, W);
-C = imfilter(Ix.*Iy, W);
-
-[h,w] = size(A);
-Harris = zeros(h,w); 
+W = fspecial('gaussian', 10, sigma);
+A = conv2(Ix.^2, W, 'same');
+B = conv2(Iy.^2, W, 'same');
+C = conv2(Ix.*Iy,W, 'same');
 k = 0.04;
-for x = 1:w
-    for y = 1:h
-        M = [A(y,x), C(y,x) ; C(y,x), B(y,x)];
-        Harris(y,x) = det(M) - k*trace(M);
-    end
-end
 
-imshow(Harris);
-    
+Harris = A.*B - C.^2 - k*(A+B); 
+imagesc(Harris);
