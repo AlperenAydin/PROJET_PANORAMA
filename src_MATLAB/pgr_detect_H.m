@@ -22,6 +22,12 @@ Harris = A.*B - C.^2 - k*(A+B); %critere de Harris
 H_max = imregionalmax(Harris);
 Harris = Harris.*H_max;
 
+%%on élimine les maxima pas assez élevés, c'est à dire ceux qui ne sont pas
+%%des coins
+threshold = 8e5;
+Harris = Harris > threshold;
+
+
 %% a faire dans en dehors de la fonction, dans panorama_auto
 % threshold = 8e5;
 % 
