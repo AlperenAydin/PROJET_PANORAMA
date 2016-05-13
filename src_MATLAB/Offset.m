@@ -1,3 +1,5 @@
+%calcul de la taille de l'image panoramique avec toutes les images.
+
 function [x_min, x_max, y_min, y_max] = Offset(invH, Coins_im1, Coins_im2)
 
 Q1 = invH*Coins_im2;

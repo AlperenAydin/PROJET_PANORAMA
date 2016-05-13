@@ -1,3 +1,5 @@
+%Trouver la zone de l'image 2 dans l'image de reference
+
 function [x_min, x_max, y_min, y_max] = Zone_Couverte(invH, Q2)
   
 Q1 = invH*Q2;

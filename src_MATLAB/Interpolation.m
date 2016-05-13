@@ -1,6 +1,7 @@
 panorama
 clearvars -except H I1 I2
 
+%Programme pour fusionner les images en une seule;
 
 % On a q2=Hq1
 invH=H;
@@ -66,7 +67,6 @@ end
 %affichage
 figure(3); colormap gray;
 imagesc(Pano);
-
 
 
 
