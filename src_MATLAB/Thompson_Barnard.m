@@ -1,4 +1,4 @@
-function [X,Y,C1,C2] = Thompson_Barnard(I1,I2)
+function [Q1,Q2] = Thompson_Barnard(I1,I2)
 
 % Detecteur de Coin d'Harris
 H1 = pgr_detect_H(I1);
@@ -55,7 +55,11 @@ for i = 1:10
    end 
 end
 
-[C, Ind ] = max(P');
+[~, Ind ] = max(P');
 X = 1:length(Ind);
 Y = Ind;
+
+Q1 = C1(X, :);
+Q2 = C2(Y, :);
+
 end
