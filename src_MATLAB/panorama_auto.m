@@ -13,3 +13,4 @@ Harris2 = pgr_detect_H(I2);
 figure(), subplot(121), imagesc(I1), colormap gray, hold on, plot(j1, i1, 'or');
 [i2, j2] = find (Harris2);
 subplot(122), imagesc(I2), colormap gray, hold on, plot(j2, i2, 'or');
+
