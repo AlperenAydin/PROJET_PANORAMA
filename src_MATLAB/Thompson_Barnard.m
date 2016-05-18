@@ -1,17 +1,28 @@
-function [Q1,Q2] = Thompson_Barnard(I1,I2)
+function [Q1,Q2] = Thompson_Barnard(I1,I2,Z)
 
-% Detecteur de Coin d'Harris
-H1 = pgr_detect_H(I1);
-H2 = pgr_detect_H(I2);
+pause on;
+% % Detecteur de Coin d'Harris
+% H1 = pgr_detect_H(I1);
+% H2 = pgr_detect_H(I2);
+% 
+% % Coordonnées de point interet
+% [i1, j1] = find(H1>0);
+% C1 = [i1,j1];
+% M = length(C1);
+% 
+% [i2, j2] = find(H2>0);
+% C2 = [i2,j2];
+% N = length(C2);
 
-% Coordonnées de point interet
-[i1, j1] = find(H1>0);
-C1 = [i1,j1];
+C1 = fliplr(corner(I1,50));
 M = length(C1);
 
-[i2, j2] = find(H2>0);
-C2 = [i2,j2];
+C2 = fliplr(corner(I2,50));
 N = length(C2);
+
+figure();
+imagesc(I1);hold on;
+plot(C1(:,2), C1(:,1), 'r*');
 
 % Initialisation des probabilité
 k = 1;
@@ -23,10 +34,12 @@ for m = 1:M
    end    
 end
 
+figure();
 cdiff = 1;
+cmax = 100;
 a = 1;
 b = 1;
-for i = 1:10
+for i = 1:18
    for m = 1:M
        sum = 0;
        for n = 1:N
@@ -42,7 +55,7 @@ for i = 1:10
                       if( ~isempty(find( (C2(l,1) == VL(:,1)) & (C2(l,2) == VL(:,2)), 1)))
                           ckl = norm( C1(k,:) - C2(l,:));
                           if( abs(ckl-cmn) <cdiff)
-                              qmn = P(k,l);
+                              qmn = qmn + P(k,l);
                           end
                       end
                    end
@@ -53,13 +66,26 @@ for i = 1:10
        end
        P(m,:) = P(m,:)/sum;
    end 
+   imagesc(P);
+   colormap gray;
+   title(num2str(i));
+   pause(0.01);
 end
 
-[~, Ind ] = max(P');
-X = 1:length(Ind);
-Y = Ind;
-
-Q1 = C1(X, :);
-Q2 = C2(Y, :);
+[MX, Ind ] = max(P');
+Q1 = [];
+Q2 = [];
+z= 0;
+while z < Z
+    [mx, i] = max(MX);
+    Xm = C1(i,:);
+    Yn = C2(Ind(i), :);
+    if( norm(Xm-Yn) < cmax)
+        Q1 = Q1:Xm;
+        Q2 = Q2:Yn;
+        z = z+1;
+    end
+    
+end
 
 end
