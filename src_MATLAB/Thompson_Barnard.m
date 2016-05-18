@@ -55,9 +55,12 @@ for i = 1:10
    end 
 end
 
-[C, Ind ] = max(P');
+[~, Ind ] = max(P');
 X = 1:length(Ind);
 Y = Ind;
 
-Q1(X, 
+Q1 = C1(X, :);
+Q2 = C2(Y, :);
+
+
 end
