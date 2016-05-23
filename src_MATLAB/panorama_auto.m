@@ -5,7 +5,10 @@ clear all; close all;
 I1 = rgb2gray(imread('keble_a.jpg'));
 I2 = rgb2gray(imread('keble_b.jpg'));
 
-[Q1, Q2] = Thompson_Barnard(I1, I2);
+I1 = im2double(I1);
+I2 = im2double(I2);
+
+[Q1, Q2] = Thompson_Barnard(I1, I2, 4);
 
 [l, w] = size(Q1);
 

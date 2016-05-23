@@ -1,4 +1,4 @@
-panorama
+panorama_auto
 clearvars -except H I1 I2
 
 %Programme pour fusionner les images en une seule;
@@ -36,7 +36,7 @@ i_max = i_min+h2;
 j_max = j_min+w2;
 
 %affichage
-figure(2); colormap gray;
+figure(); colormap gray;
 imagesc(Pano);
 
 Pano(i_min:i_min+h2-1, j_min:j_min+w2-1) = I1(:,:);
@@ -65,7 +65,7 @@ end
 
 
 %affichage
-figure(3); colormap gray;
+figure(); colormap gray;
 imagesc(Pano);
 
 

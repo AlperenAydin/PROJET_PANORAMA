@@ -4,89 +4,94 @@ pause on;
 % % Detecteur de Coin d'Harris
 % H1 = pgr_detect_H(I1);
 % H2 = pgr_detect_H(I2);
-% 
+%
 % % Coordonnées de point interet
 % [i1, j1] = find(H1>0);
 % C1 = [i1,j1];
 % M = length(C1);
-% 
+%
 % [i2, j2] = find(H2>0);
 % C2 = [i2,j2];
 % N = length(C2);
 
-C1 = fliplr(corner(I1,50));
+C1 = fliplr(corner(I1,'Harris',50));
 M = length(C1);
 
-C2 = fliplr(corner(I2,50));
+C2 = fliplr(corner(I2,'Harris',50));
 N = length(C2);
 
 figure();
 imagesc(I1);hold on;
 plot(C1(:,2), C1(:,1), 'r*');
 
-% Initialisation des probabilité
-k = 1;
+% Initialisation de la carte de la probabilité
+k = 0.5;
 P = zeros(M,N);
+cmax = 250;
 for m = 1:M
-   for n = 1:N
-       wmn = similarite(I1, I2, C1(m,1), C1(m,2), C2(n,1), C2(n,2));
-       P(m,n) = 1./(1 + k*wmn); 
-   end    
+    for n = 1:N
+        cmn = norm(C1(m,:) - C2(n,:));
+        if(cmn < cmax)
+            wmn = similarite(I1, I2, C1(m,1), C1(m,2), C2(n,1), C2(n,2), 10);
+            P(m,n) = 1/(1 + k*wmn);
+        end
+    end
 end
 
 figure();
-cdiff = 1;
-cmax = 100;
+cdiff = 10;
 a = 1;
 b = 1;
-for i = 1:18
-   for m = 1:M
-       sum = 0;
-       for n = 1:N
-           qmn = 0;
-           cmn = norm(C1(m,:) - C2(n,:));
-           VK = V8(I1, C1(m,1), C1(m,2));
-           VL = V8(I2, C2(n,1), C2(n,2));
-           for k = 1:M
-               % On cherche k tq xk est voisin a xm 
-               if( ~isempty(find( (C1(k,1) == VK(:,1)) & (C1(k,2) == VK(:,2)), 1)))
-                   for l = 1:N
-                      % On cherhce l tq yl est voisin a yn
-                      if( ~isempty(find( (C2(l,1) == VL(:,1)) & (C2(l,2) == VL(:,2)), 1)))
-                          ckl = norm( C1(k,:) - C2(l,:));
-                          if( abs(ckl-cmn) <cdiff)
-                              qmn = qmn + P(k,l);
-                          end
-                      end
-                   end
-               end
-           end      
-           P(m,n) = P(m,n)*(a+b*qmn);
-           sum = sum + P(m,n);
-       end
-       P(m,:) = P(m,:)/sum;
-   end 
-   imagesc(P);
-   colormap gray;
-   title(num2str(i));
-   pause(0.01);
+% Pp = P precedent
+Pp = P;
+init = 0;
+i =0;
+while( norm(Pp-P) > 1e-3 || init == 0)
+    init = 1;
+    Pp = P;
+    for m = 1:M
+        for n = 1:N
+            qmn = 0;
+            cmn = norm(C1(m,:) - C2(n,:));
+            for k = 1:M
+                % On cherche k tq xk est voisin a xm
+                if( k ~= m && norm(C1(m,:) - C1(k,:)) < 120)
+                    for l = 1:N
+                        % On teste de la coherence
+                        ckl = norm( C1(k,:) - C2(l,:));
+                        if( abs(ckl-cmn) <cdiff)
+                            qmn = qmn + P(k,l);
+                        end
+                    end
+                end
+                P(m,n) = P(m,n)*(a+b*qmn);
+            end
+        end
+        rowsum = sum(P(m,:));
+        P(m,:) = P(m,:)/rowsum;
+    end
+    imagesc(P);
+    colormap gray;
+    i = i+1;
+    title(num2str(i));
+    pause(0.01);
 end
 
-[MX, Ind ] = max(P');
 Q1 = [];
 Q2 = [];
 z= 0;
 while z < Z
-    [mx, i] = max(MX);
+    [MX, Ind ] = max(P');
+    [~, i] = max(MX);
     Xm = C1(i,:);
     Yn = C2(Ind(i), :);
     if( norm(Xm-Yn) < cmax)
-        Q1 = Q1:Xm;
-        Q2 = Q2:Yn;
+        Q1 = vertcat(Q1,Xm);
+        Q2 = vertcat(Q2,Yn);
+        P(i,:) = 0;
+        P(:,Ind(i)) = 0;
         z = z+1;
     end
     
 end
-
-
 end
