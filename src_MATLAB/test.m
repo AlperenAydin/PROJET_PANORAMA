@@ -1,9 +1,9 @@
-clear all; close all;
+close all;
 
 
 %%chargement des images puis on les mets en niv de gris
-I1 = rgb2gray(imread('keble_b.jpg'));
-I2 = rgb2gray(imread('keble_c.jpg'));
+I1 = rgb2gray(imread('keble_a.jpg'));
+I2 = rgb2gray(imread('keble_b.jpg'));
 
 I1 = im2double(I1);
 I2 = im2double(I2);

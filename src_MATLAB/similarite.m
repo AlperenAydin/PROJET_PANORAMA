@@ -15,8 +15,11 @@ for i = 1:d*d
    end    
 end
 
-C = sum/n;
-% tmp = (f1-f2).^2;
-% C = mean(tmp(:));
+if(n==0)
+    C = 0;
+else
+    C = sum/n;
+end
+
 
 end

@@ -27,15 +27,20 @@ plot(C1(:,2), C1(:,1), 'r*');
 % Initialisation de la carte de la probabilité
 k = 0.5;
 P = zeros(M,N);
-cmax = 250;
+cmax = 350;
 for m = 1:M
     for n = 1:N
         cmn = norm(C1(m,:) - C2(n,:));
         if(cmn < cmax)
-            wmn = similarite(I1, I2, C1(m,1), C1(m,2), C2(n,1), C2(n,2), 10);
+            wmn = similarite(I1, I2, C1(m,1), C1(m,2), C2(n,1), C2(n,2), 50);
             P(m,n) = 1/(1 + k*wmn);
         end
     end
+    rowsum = sum(P(m,:));
+    if(rowsum == 0)
+        disp(rowsum);
+    end
+    P(m,:) = P(m,:)/rowsum;
 end
 
 figure();
@@ -46,25 +51,29 @@ b = 1;
 Pp = P;
 init = 0;
 i =0;
-while( norm(Pp-P) > 1e-3 || init == 0)
+while( norm(Pp-P) > 1e-2 || init == 0)
     init = 1;
     Pp = P;
     for m = 1:M
         for n = 1:N
             qmn = 0;
             cmn = norm(C1(m,:) - C2(n,:));
-            for k = 1:M
-                % On cherche k tq xk est voisin a xm
-                if( k ~= m && norm(C1(m,:) - C1(k,:)) < 120)
-                    for l = 1:N
-                        % On teste de la coherence
-                        ckl = norm( C1(k,:) - C2(l,:));
-                        if( abs(ckl-cmn) <cdiff)
-                            qmn = qmn + P(k,l);
+            if(cmn < cmax)
+                for k = 1:M
+                    % On cherche k tq xk est voisin a xm
+                    if( k ~= m && norm(C1(m,:) - C1(k,:)) < 120)
+                        for l = 1:N
+                            ckl = norm( C1(k,:) - C2(l,:));
+                            if(ckl < cmax)
+                                % On teste de la coherence
+                                if( abs(ckl-cmn) <cdiff)
+                                    qmn = qmn + P(k,l);
+                                end
+                            end
                         end
                     end
+                    P(m,n) = P(m,n)*(a+b*qmn);
                 end
-                P(m,n) = P(m,n)*(a+b*qmn);
             end
         end
         rowsum = sum(P(m,:));
@@ -88,10 +97,14 @@ while z < Z
     if( norm(Xm-Yn) < cmax)
         Q1 = vertcat(Q1,Xm);
         Q2 = vertcat(Q2,Yn);
-        P(i,:) = 0;
-        P(:,Ind(i)) = 0;
+        P(i,Ind(i)) = 0;
+        %P(:,Ind(i)) = 0;
         z = z+1;
     end
-    
+    imagesc(P);
+    colormap gray;
+    i = i+1;
+    title(num2str(i));
+    pause(0.01); 
 end
 end
