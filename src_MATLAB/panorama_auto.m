@@ -8,7 +8,11 @@ I2 = (imread('house2.png'));
 I1 = im2double(I1);
 I2 = im2double(I2);
 
-[Q1, Q2] = Thompson_Barnard(I1, I2, 4);
+%[Q1, Q2] = Thompson_Barnard(I1, I2, 4);
+[f1, d1] = vl_sift(single(I1)) ;
+[f2, d2] = vl_sift(single(I2)) ;
+[matches, scores] = vl_ubcmatch(d1, d2) ;
+
 
 [l, w] = size(Q1);
 
