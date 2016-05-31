@@ -14,8 +14,6 @@ Q1 = fliplr(Q1);
 Q2 = fliplr(Q2);
 
 
-
-
 figure(1);
 clf;
 imagesc(I1);

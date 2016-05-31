@@ -4,7 +4,6 @@ clearvars -except H I1 I2
 %Programme pour fusionner les images en une seule;
 
 % On a q2=Hq1
-invH=H;
 H = inv(H);
 invH=inv(H);
 
