@@ -1,23 +1,13 @@
-clear all; close all;
+function H = estHomographie(Q1,Q2)
 
-
-%%chargement des images puis on les mets en niv de gris
-I1 = rgb2gray(imread('keble_b.jpg'));
-I2 = rgb2gray(imread('keble_c.jpg'));
-
-I1 = im2double(I1);
-I2 = im2double(I2);
-
-%[Q1, Q2] = Thompson_Barnard(I1, I2, 4);
-[Q1,Q2] = siftFeatureMatch(I1,I2, 8);
-
+% Reformatage de Q1,Q2
 [l, w] = size(Q1);
+Q1 = horzcat(Q1,ones(l,1));
+Q2 = horzcat(Q2,ones(l,1));
 
 %% Construction de A
 % On considere A comme A = horzcat(A1,A2,A3)
 % On calcul Ai separement
-Q1 = horzcat(Q1,ones(l,1));
-Q2 = horzcat(Q2,ones(l,1));
 
 A1 = zeros(2*l,3);
 
@@ -38,7 +28,10 @@ for i = 1:2:2*l
    n = n+1; 
 end
 A = horzcat(A1,A2,A3);
+% Calcul de H
 [V,D] = eig(A'*A);
 h = V(:,1);
 H = reshape(h,3,3);
 H = H';
+
+end
