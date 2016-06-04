@@ -2,12 +2,12 @@ close all;
 clearvars;
 
 %%chargement des images puis on les mets en niv de gris
-I1 = rgb2gray(imread('keble_a.jpg'));
-I2 = rgb2gray(imread('keble_b.jpg'));
+I(:,:,1) = rgb2gray(imread('keble_b.jpg')); %image de référence
+I(:,:,2) = rgb2gray(imread('keble_a.jpg'));
+I(:,:,3) = rgb2gray(imread('keble_c.jpg'));
 
-I1 = im2double(I1);
-I2 = im2double(I2);
+I = im2double(I);
 
-P = Pano(I1,I2);
+P = Pano(I);
 
 imagesc(P);
